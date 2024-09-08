@@ -19,6 +19,7 @@ import os.path
 import random
 # from smbus import SMBus
 import argparse
+import time
 
 import threading
 import RPi_I2C_driver
@@ -489,7 +490,7 @@ class _TCPHandler:
         # 메인 스레드 실행 (루프)
         while self.running:
             time.sleep(1)  # 메인 스레드 대기
-            
+
     def killThreads(self):
         print("INFO (PEV) : Killing sniffing threads")
         if self.scanner != None:

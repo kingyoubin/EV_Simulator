@@ -1,5 +1,6 @@
 import asyncio
 import RPi_I2C_driver  # assuming the lcd driver is imported here
+import time
 
 # ChargeHandler 클래스 선언
 class LCDHandler:
