@@ -463,8 +463,8 @@ class _TCPHandler:
         print("INFO (PEV) : Starting TCP")
 
         # chargePercent 작업을 별도의 스레드로 실행
-        self.lcd_thread = threading.Thread(target=self.lcd.chargePercent)
-        self.lcd_thread.start()
+        #self.lcd_thread = threading.Thread(target=self.lcd.chargePercent)
+        #self.lcd_thread.start()
 
         # 비동기 패킷 스니핑 시작
         self.recvThread = AsyncSniffer(
@@ -669,6 +669,8 @@ class _TCPHandler:
                         self.xml.PreChargeRequest()
                 elif "PowerDeliveryRes" in name:
                     self.xml.CurrentDemandRequest()
+                    self.lcd_thread = threading.Thread(target=self.lcd.chargePercent)
+                    self.lcd_thread.start()
                 elif "CurrentDemandRes" in name:
                     self.xml.CurrentDemandRequest()
                 else:
