@@ -441,7 +441,7 @@ class _TCPHandler:
 
         self.exi = self.pev.exi
         self.xml = XMLBuilder(self.exi)
-        self.lcd = LCDHandler
+        self.lcd = LCDHandler()
         self.msgList = {}
 
         self.stop = False
