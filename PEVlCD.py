@@ -460,6 +460,7 @@ class _TCPHandler:
         self.running = True
         self.prechargeCount = 0
         print("INFO (PEV) : Starting TCP")
+        asyncio.run(self.lcd.chargePercent())
 
         # self.sendNeighborSolicitation()
 
@@ -677,7 +678,6 @@ class _TCPHandler:
                     self.xml.CurrentDemandRequest()
                 elif "CurrentDemandRes" in name:
                     self.xml.CurrentDemandRequest()
-                    asyncio.run(self.lcd.chargePercent())
                 else:
                     raise Exception(f'Packet type "{name}" not recognized')
 
