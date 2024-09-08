@@ -22,6 +22,7 @@ import argparse
 
 import threading
 import RPi_I2C_driver
+import asyncio
 
 
 class PEV:
