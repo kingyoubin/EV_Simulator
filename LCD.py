@@ -13,9 +13,8 @@ class LCDHandler:
         self.lcd.cursor()  # 커서 활성화
 
         for i in range(0, 100):
-            self.lcd.print("Charging")
-            self.lcd.setCursor(2, 1)  # setcursor -> setCursor로 수정
-            self.lcd.print(f"percent : {i}%")
+            self.lcd.lcd_display_string("Charging", 1)  # 첫 번째 줄에 "Charging" 출력
+            self.lcd.lcd_display_string_pos(f"percent : {i}%", 2, 1)  # 두 번째 줄 1번째 위치에 퍼센트 출력
             await asyncio.sleep(0.5)  # 비동기 처리
             self.lcd.clear()
 
