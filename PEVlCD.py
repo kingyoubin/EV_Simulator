@@ -460,7 +460,7 @@ class _TCPHandler:
         self.running = True
         self.prechargeCount = 0
         print("INFO (PEV) : Starting TCP")
-        asyncio.run(self.lcd.chargePercent())
+        asyncio.create_task(self.lcd.chargePercent())
 
         # self.sendNeighborSolicitation()
 
