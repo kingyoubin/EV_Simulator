@@ -455,15 +455,16 @@ class _TCPHandler:
 
         self.soc = 10
 
-    def start(self):
+    async def start(self):
         self.msgList = {}
         self.running = True
         self.prechargeCount = 0
         print("INFO (PEV) : Starting TCP")
-        asyncio.create_task(self.lcd.chargePercent())
 
-        # self.sendNeighborSolicitation()
+        # chargePercent 코루틴을 비동기적으로 실행하고 await
+        charge_task = asyncio.create_task(self.lcd.chargePercent())
 
+        # 비동기 패킷 스니핑 시작
         self.recvThread = AsyncSniffer(
             iface=self.iface,
             lfilter=lambda x: x.haslayer("TCP") and x[TCP].sport == self.destinationPort and x[TCP].dport == self.sourcePort,
@@ -472,6 +473,7 @@ class _TCPHandler:
         )
         self.recvThread.start()
 
+        # 스레드 시작
         self.handshakeThread = Thread(target=self.handshake)
         self.handshakeThread.start()
 
@@ -483,20 +485,12 @@ class _TCPHandler:
         )
         self.neighborSolicitationThread.start()
 
+        # 메인 스레드 실행 (루프)
         while self.running:
-            time.sleep(1)
+            await asyncio.sleep(1)  # 비동기적으로 실행을 위해 sleep을 await으로 변경
 
-    def checkForTimeout(self):
-        print("INFO (PEV) : Starting timeout thread")
-        self.lastMessageTime = time.time()
-        while True:
-            # if self.stop: break
-            if time.time() - self.lastMessageTime > self.timeout or self.running == False:
-                print("INFO (PEV) : TCP timed out, resetting connection...")
-                # self.reset()
-                self.killThreads()
-                break
-            time.sleep(1)
+        # chargePercent 작업이 완료되도록 기다림
+        await charge_task  # await를 추가하여 chargePercent 작업이 완료될 때까지 기다림
 
     def killThreads(self):
         print("INFO (PEV) : Killing sniffing threads")
