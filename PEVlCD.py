@@ -125,9 +125,11 @@ class _SLACHandler:
         self.timeout = 8  # How long to wait for a message to timeout
         self.stop = False
         self.attenuation_records = []  # 감쇄값 기록
+        self.lcd = LCDHandler()
 
     # This method starts the slac process and will stop
     def start(self):
+        self.lcd.chargeReady()
         self.runID = os.urandom(8)
         self.stop = False
         self.attenuation_records.clear()  # 감쇄값 기록 초기화
@@ -463,8 +465,8 @@ class _TCPHandler:
         print("INFO (PEV) : Starting TCP")
 
         # chargePercent 작업을 별도의 스레드로 실행
-        #self.lcd_thread = threading.Thread(target=self.lcd.chargePercent)
-        #self.lcd_thread.start()
+        self.lcd_thread = threading.Thread(target=self.lcd.chargePercent)
+        self.lcd_thread.start()
 
         # 비동기 패킷 스니핑 시작
         self.recvThread = AsyncSniffer(
@@ -669,8 +671,6 @@ class _TCPHandler:
                         self.xml.PreChargeRequest()
                 elif "PowerDeliveryRes" in name:
                     self.xml.CurrentDemandRequest()
-                    self.lcd_thread = threading.Thread(target=self.lcd.chargePercent)
-                    self.lcd_thread.start()
                 elif "CurrentDemandRes" in name:
                     self.xml.CurrentDemandRequest()
                 else:
